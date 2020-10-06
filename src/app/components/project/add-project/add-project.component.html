@@ -1,0 +1,54 @@
+<!-- Title group  -->
+<div class="title-group">
+  <h1 class="mat-h1">Project toevoegen</h1>
+  <mat-divider fxFlex="1 0"></mat-divider>
+</div>
+
+<!-- Form -->
+<div class="inner-wrapper-full">
+  <form [formGroup]="projectForm" (ngSubmit)="submitProjectForm()" #resetProjectForm="ngForm" novalidate>
+    <!-- Left block -->
+    <mat-card>
+      <div class="example-full-width">
+
+        <!-- Klanten -->
+        <mat-form-field class="col-3">
+          <mat-label>Klant</mat-label>
+          <mat-select [(value)]="selected" formControlName="client_id">
+            <mat-option [value]="clientData._id" *ngFor="let clientData of ClientData">{{clientData.business_name}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="handleError('client_id', 'required')">
+            Klant is verplicht
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Projectcode -->
+        <mat-form-field class="col-3">
+          <input matInput placeholder="Projectcode" formControlName="project_code">
+          <mat-error *ngIf="handleError('project_code', 'required')">
+            <strong>Projectcode</strong> is verplicht
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Projectname -->
+        <mat-form-field class="col-3">
+          <input matInput placeholder="Projectnaam" formControlName="project_name">
+          <mat-error *ngIf="handleError('project_name', 'required')">
+            <strong>Projectnaam</strong> is verplicht
+          </mat-error>
+        </mat-form-field>
+
+      </div>
+    </mat-card>
+
+    <!-- Submit & Reset -->
+    <mat-card>
+      <div class="full-wrapper button-wrapper">
+        <div class="button-wrapper">
+          <button mat-flat-button color="primary">Opslaan</button>
+        </div>
+      </div>
+    </mat-card>
+  </form>
+</div>
