@@ -1,4 +1,4 @@
-import {Component, NgZone, OnInit} from '@angular/core';
+import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {ClientApiService} from '../../../shared/client/clientapi.service';
@@ -14,6 +14,7 @@ import {ProjectApiService} from '../../../shared/project/projectapi.service';
 export class AddProjectComponent implements OnInit {
   ClientData: any = [];
   dataSource: MatTableDataSource<Client>;
+  @ViewChild('resetProjectForm', { static: true }) myNgForm;
   projectForm: FormGroup;
   selected = true;
 
@@ -27,9 +28,6 @@ export class AddProjectComponent implements OnInit {
     this.clientApi.GetClients().subscribe(data => {
       this.ClientData = data;
       this.dataSource = new MatTableDataSource<Client>(this.ClientData);
-      // setTimeout(() => {
-      //   this.dataSource.paginator = this.paginator;
-      // }, 0);
     })
   }
 
@@ -51,7 +49,7 @@ export class AddProjectComponent implements OnInit {
     return this.projectForm.controls[controlName].hasError(errorName);
   }
 
-  /* Submit book */
+  /* Submit project */
   submitProjectForm() {
     if (this.projectForm.valid) {
       this.projectApi.AddProject(this.projectForm.value).subscribe(res => {

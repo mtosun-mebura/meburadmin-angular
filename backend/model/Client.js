@@ -39,6 +39,9 @@ let Client = new Schema({
   rate: {
     type: Number
   },
+  vat: {
+    type: Boolean
+  },
   contract: {
     type: String
   }

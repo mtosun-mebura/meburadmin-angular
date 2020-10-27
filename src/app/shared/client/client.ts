@@ -12,5 +12,6 @@ export class Client {
   start_date: Date;
   end_date: Date;
   rate: String;
+  vat: Boolean;
   contract: String;
 }

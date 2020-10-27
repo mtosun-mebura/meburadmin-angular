@@ -10,6 +10,7 @@ import {Client} from '../../../shared/client/client';
   templateUrl: './projects-list.component.html',
   styleUrls: ['./projects-list.component.css']
 })
+
 export class ProjectsListComponent implements OnInit {
   ProjectData: any = [];
   dataSource: MatTableDataSource<Project>;

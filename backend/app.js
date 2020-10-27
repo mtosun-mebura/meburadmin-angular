@@ -21,6 +21,7 @@ mongoose.connect(dataBaseConfig.db, {
 // Set up express js port
 const clientRoute = require('./routes/client.route')
 const projectRoute = require('./routes/project.route')
+const timesheetRoute = require('./routes/timesheet.route')
 
 const app = express();
 app.use(bodyParser.json());
@@ -34,8 +35,9 @@ app.use(express.static(path.join(__dirname, 'dist/meburadmin-angular')));
 
 
 // RESTful API root
-app.use('/api-client', clientRoute)
-app.use('/api-project', projectRoute)
+app.use('/api/client', clientRoute)
+app.use('/api/project', projectRoute)
+app.use('/api/timesheet', timesheetRoute)
 
 // PORT
 const port = process.env.PORT || 8000;

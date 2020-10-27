@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { ClientApiService } from '../../../shared/client/clientapi.service';
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { FormGroup, FormControl, FormBuilder, Validators } from "@angular/forms";
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
 
@@ -29,6 +29,7 @@ export class AddClientComponent implements OnInit {
   clientForm: FormGroup;
   subjectArray: Subject[] = [];
   DepartmentArray: any = ['Financiën', 'Administratie', 'Debiteuren'];
+  floatLabelControl = new FormControl('always');
 
   constructor(
     public fb: FormBuilder,
@@ -36,7 +37,11 @@ export class AddClientComponent implements OnInit {
     private ngZone: NgZone,
     private clientApi: ClientApiService,
     public datePipe: DatePipe
-  ) { }
+  ) {
+    this.clientForm = fb.group({
+      floatLabel: this.floatLabelControl,
+    });
+  }
 
   ngOnInit(): void {
     this.submitFieldsForm();
@@ -56,33 +61,11 @@ export class AddClientComponent implements OnInit {
       invoice_inner: ['week', [Validators.required]],
       payment_days: ['14', [Validators.required]],
       start_date: ['', [Validators.required]],
-      end_date: ['', []]
+      end_date: ['', []],
+      vat: [true, []],
+      floatLabel: this.floatLabelControl,
     })
   }
-
-  /* Add dynamic languages */
-  // add(event: MatChipInputEvent): void {
-  //   const input = event.input;
-  //   const value = event.value;
-  //   console.log('add input: ', input);
-  //   console.log('add value: ', value);
-  //   // Add language
-  //   if ((value || '').trim() && this.subjectArray.length < 5) {
-  //     this.subjectArray.push({ name: value.trim() })
-  //   }
-  //   // Reset the input value
-  //   if (input) {
-  //     input.value = '';
-  //   }
-  // }
-
-  /* Remove dynamic languages */
-  // remove(subject: Subject): void {
-  //   const index = this.subjectArray.indexOf(subject);
-  //   if (index >= 0) {
-  //     this.subjectArray.splice(index, 1);
-  //   }
-  // }
 
   /* Date */
   formatStartDate(e) {

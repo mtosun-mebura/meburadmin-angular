@@ -37,13 +37,8 @@ export const MENUITEMS: any = [
       title: "Urenverantwoording",
       children: [
         {
-          title: "Toevoegen",
-          url: "/add-hours",
-          icon: "add"
-        },
-        {
           title: "Overzicht uren",
-          url: "/hours-list",
+          url: "/timesheets-list",
           icon: "format_list_bulleted"
         }
       ],

@@ -1,18 +1,18 @@
 <!-- Title group  -->
 <div class="title-group">
-  <h1 class="mat-h1">Project toevoegen</h1>
-  <mat-divider fxFlex="1 0"></mat-divider>
+  <h1 class="mat-h1">Projecten</h1>
+  <mat-divider></mat-divider>
 </div>
 
 <!-- Form -->
-<div class="inner-wrapper-full">
-  <form [formGroup]="projectForm" (ngSubmit)="submitProjectForm()" #resetProjectForm="ngForm" novalidate>
-    <!-- Left block -->
-    <mat-card>
-      <div class="example-full-width">
+<form [formGroup]="projectForm" (ngSubmit)="submitProjectForm()" #resetProjectForm="ngForm" novalidate>
+  <mat-card>
+    <mat-card-title><h3>Project toevoegen</h3></mat-card-title>
 
+    <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
+      <div fxFlex="40">
         <!-- Klanten -->
-        <mat-form-field class="col-3">
+        <mat-form-field class="example-full-width">
           <mat-label>Klant</mat-label>
           <mat-select [(value)]="selected" formControlName="client_id">
             <mat-option [value]="clientData._id" *ngFor="let clientData of ClientData">{{clientData.business_name}}
@@ -22,33 +22,38 @@
             Klant is verplicht
           </mat-error>
         </mat-form-field>
+      </div>
 
+      <div fxFlex="20" fxFlexOffset="10px">
         <!-- Projectcode -->
-        <mat-form-field class="col-3">
+        <mat-form-field>
+          <mat-label>Projectcode</mat-label>
           <input matInput placeholder="Projectcode" formControlName="project_code">
           <mat-error *ngIf="handleError('project_code', 'required')">
             <strong>Projectcode</strong> is verplicht
           </mat-error>
         </mat-form-field>
+      </div>
 
+      <div fxFlex="40" fxFlexOffset="10px">
         <!-- Projectname -->
-        <mat-form-field class="col-3">
+        <mat-form-field>
           <input matInput placeholder="Projectnaam" formControlName="project_name">
           <mat-error *ngIf="handleError('project_name', 'required')">
             <strong>Projectnaam</strong> is verplicht
           </mat-error>
         </mat-form-field>
-
       </div>
-    </mat-card>
+    </div>
+  </mat-card>
 
-    <!-- Submit & Reset -->
-    <mat-card>
-      <div class="full-wrapper button-wrapper">
-        <div class="button-wrapper">
-          <button mat-flat-button color="primary">Opslaan</button>
-        </div>
+  <!-- Submit & Reset -->
+  <mat-card>
+    <div class="full-wrapper button-wrapper">
+      <div class="button-wrapper">
+        <button mat-flat-button color="primary">Opslaan</button>
       </div>
-    </mat-card>
-  </form>
-</div>
+    </div>
+  </mat-card>
+</form>
+

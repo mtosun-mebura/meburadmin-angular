@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { ClientApiService } from '../../../shared/client/clientapi.service';
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import * as moment from 'moment';
 
 export interface Subject {
@@ -28,6 +28,7 @@ export class EditClientComponent implements OnInit {
   clientForm: FormGroup;
   subjectArray: Subject[] = [];
   DepartmentArray: any = ['Financiën', 'Administratie', 'Debiteuren'];
+  floatLabelControl = new FormControl('always');
 
   ngOnInit() {
     this.updateBookForm();
@@ -40,6 +41,10 @@ export class EditClientComponent implements OnInit {
     private actRoute: ActivatedRoute,
     private clientApi: ClientApiService
   ) {
+    this.clientForm = fb.group({
+      floatLabel: this.floatLabelControl,
+    });
+
     const id = this.actRoute.snapshot.paramMap.get('id');
     this.clientApi.GetClient(id).subscribe(data => {
       this.clientForm = this.fb.group({
@@ -54,7 +59,8 @@ export class EditClientComponent implements OnInit {
         invoice_inner: [data.invoice_inner, [Validators.required]],
         payment_days: [data.payment_days, [Validators.required]],
         start_date: [data.start_date, [Validators.required]],
-        end_date: [data.end_date, [Validators.required]]
+        end_date: [data.end_date, [Validators.required]],
+        vat: [data.vat, [Validators.required]]
       })
     })
   }
@@ -73,30 +79,9 @@ export class EditClientComponent implements OnInit {
       invoice_inner: ['week', [Validators.required]],
       payment_days: ['14', [Validators.required]],
       start_date: ['', [Validators.required]],
-      end_date: ['', []]
+      end_date: ['', []],
+      vat: [true, []]
     })
-  }
-
-  /* Add dynamic languages */
-  add(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = event.value;
-    // Add language
-    if ((value || '').trim() && this.subjectArray.length < 5) {
-      this.subjectArray.push({ name: value.trim() })
-    }
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
-  }
-
-  /* Remove dynamic languages */
-  remove(subject: Subject): void {
-    const index = this.subjectArray.indexOf(subject);
-    if (index >= 0) {
-      this.subjectArray.splice(index, 1);
-    }
   }
 
   /* Date */
@@ -119,14 +104,14 @@ export class EditClientComponent implements OnInit {
     return this.clientForm.controls[controlName].hasError(errorName);
   }
 
-  /* Update book */
+  /* Update client */
   updateClientForm() {
-    var id = this.actRoute.snapshot.paramMap.get('id');
-    if (window.confirm('Are you sure you want to update?')) {
+    const id = this.actRoute.snapshot.paramMap.get('id');
+    // if (window.confirm('Are you sure you want to update?')) {
       this.clientApi.UpdateClient(id, this.clientForm.value).subscribe( res => {
         this.ngZone.run(() => this.router.navigateByUrl('/clients-list'))
       });
-    }
+    // }
   }
 
   cancel() {

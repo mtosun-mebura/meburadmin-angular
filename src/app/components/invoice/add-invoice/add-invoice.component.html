@@ -1,0 +1,67 @@
+<!-- Title group  -->
+<div class="title-group">
+  <h1 class="mat-h1">Facturen</h1>
+  <mat-divider></mat-divider>
+</div>
+
+<!-- selection year and week -->
+<form [formGroup]="invoiceForm" #resetTimesheetForm="ngForm" novalidate>
+  <mat-card>
+    <mat-card-title><h3>Kies een periode</h3></mat-card-title>
+    <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
+      <div fxFlex="10">
+        <mat-form-field>
+          <mat-label>Jaar</mat-label>
+          <mat-select [(value)]="chosenYear" formControlName="year" >
+            <mat-option [value]="years" *ngFor="let years of this.utils.getYears()">{{years}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="handleError('year', 'required')">
+            Jaar is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="10" fxFlexOffset="10px">
+        <mat-form-field>
+          <mat-label>maand</mat-label>
+          <mat-select [(value)]="chosenMonth" formControlName="month">
+            <mat-option [value]="i" *ngFor="let months of monthsArray; let i = index">{{months}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="handleError('month', 'required')">
+            Maand is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="10" fxFlexOffset="10px" ng-controller="MainController">
+        <mat-form-field>
+          <mat-label>klant</mat-label>
+          <mat-select [(value)]="chosenClient" formControlName="client" ng-model="chosenClient">
+            <mat-option [value]="clients._id" *ngFor="let clients of this.ClientData">{{clients.business_name}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="handleError('client', 'required')">
+            Klant is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card>
+  <mat-card>
+    <mat-card-title><h3>Resultaat</h3></mat-card-title>
+    <div fxLayout="column" fxLayout.xs="column" fxFlexFill>
+      <div fxFlex="100">
+        <div class="full-wrapper button-wrapper-input">
+          <div class="button-wrapper-input">
+            <button mat-icon-button color="primary" aria-label="Opslaan" (click)="generatePdf()">
+              <mat-icon>save</mat-icon>
+            </button>
+          </div>
+        </div>
+        <app-pdf-content [timesheetData]="this.filteredData" [clientInfo]="this.clientInfo"></app-pdf-content>
+      </div>
+      <div fxFlex="100">
+
+      </div>
+    </div>
+  </mat-card>
+
+
+</form>

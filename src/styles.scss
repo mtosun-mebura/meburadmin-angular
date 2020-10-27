@@ -87,6 +87,8 @@ mat-sidenav mat-icon {
 
 .misc-bottom-padding mat-label {
   margin-right: 15px;
+  display: block;
+  padding-bottom: 10px;
 }
 
 mat-radio-group mat-radio-button {
@@ -149,11 +151,19 @@ body .push-right {
 .no-data {
   text-align: center;
   padding-top: 30px;
-  color: #6c75a9;
+  color: red;
 }
 
 .button-wrapper {
   margin: 20px 0 0 0;
+}
+
+.button-wrapper-input {
+  margin: 4px 0 0 0;
+}
+
+.b-margin {
+  margin-bottom: 10px;
 }
 
 .vertical-radio-group {
@@ -180,11 +190,6 @@ body .push-right {
 
   .mat-sidenav-content {
     padding: 20px 20px 0;
-  }
-
-  .misc-bottom-padding mat-label {
-    display: block;
-    padding-bottom: 10px;
   }
 
   .mat-sidenav {
@@ -229,7 +234,16 @@ body {
   margin-right: 15px;
 }
 
+.col-6 {
+  width: 50%;
+  margin-right: 15px;
+}
+
 th.mat-header-cell:last-of-type, td.mat-cell:last-of-type, td.mat-footer-cell:last-of-type {
+  width: 10%;
+}
+
+.actions {
   width: 10%;
 }
 
@@ -237,3 +251,70 @@ th.mat-header-cell:last-of-type, td.mat-cell:last-of-type, td.mat-footer-cell:la
   background-color: #EBF5FB;
 }
 
+.mat-form-field {
+  display: inline !important;
+}
+
+.mat-table {
+  .day, .date, .hours {
+    width: 10%;
+  }
+
+  .actions {
+    width: 8% !important;
+  }
+
+  .project {
+    width: 20%;
+  }
+
+  .description {
+    width: 40%;
+  }
+}
+
+.mat-card {
+  margin: 10px 0 10px 0;
+
+  .mat-card-title {
+    border-bottom: 1px maroon solid;
+  }
+}
+
+#timesheetPdf {
+  .container {
+    width: 100%;
+    height: 100%;
+    //margin: 50px;
+  }
+
+  .header {
+    height: 50px;
+  }
+
+  .address-container {
+    font-family: Arial, Calibri;
+    font-size: 9px;
+
+    .address-to {
+      width: 50%;
+      float: left;
+    }
+
+    .address {
+      width: 50%;
+      float: right;
+    }
+  }
+
+  .mat-card-image {
+    height: 30px !important;
+    width: auto;
+    margin: 50px 50px 10px 0;
+  }
+
+  .border {
+    border: 1px solid #ccc;
+  }
+
+}

@@ -1,0 +1,150 @@
+<!-- Title group  -->
+<div class="title-group">
+  <h1 class="mat-h1">Overzicht uren</h1>
+  <mat-divider></mat-divider>
+</div>
+
+<!-- selection year and week -->
+<form [formGroup]="timesheetForm" (ngSubmit)="submitTimesheetForm()" #resetTimesheetForm="ngForm" novalidate>
+  <mat-card>
+    <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
+      <div fxFlex="10">
+        <mat-form-field>
+          <mat-label>Jaar</mat-label>
+          <mat-select [(value)]="selectedYear" formControlName="year" >
+            <mat-option [value]="years" *ngFor="let years of this.utils.getYears()">{{years}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="handleError('year', 'required')">
+            Jaar is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="10" fxFlexOffset="10px">
+        <mat-form-field>
+          <mat-label>week</mat-label>
+          <mat-select [(value)]="selectedWeek" formControlName="week">
+            <mat-option [value]="weekNumbers" *ngFor="let weekNumbers of this.utils.getWeeks()">{{weekNumbers}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="handleError('week', 'required')">
+            Week is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Add new hours -->
+  <mat-card>
+    <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
+      <div fxFlex="10">
+        <mat-form-field>
+          <mat-label>Dag</mat-label>
+          <mat-select [(value)]="selectedDay" formControlName="day" [disabled]="true">
+            <mat-option [value]="weekDays" *ngFor="let weekDays of weekDaysArray">{{weekDays}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="handleError('day', 'required')">
+            Dag is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="10" fxFlexOffset="10px">
+        <mat-form-field>
+          <input matInput readonly [matDatepicker]="picker" placeholder="Datum" formControlName="date"
+                 (dateChange)="formatDate($event)">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="handleError('date', 'required')">
+            Datum is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="20" fxFlexOffset="10px">
+        <mat-form-field>
+          <mat-label>Project</mat-label>
+          <mat-select [(value)]="selected" formControlName="project_id">
+            <mat-option [value]="projectData._id" *ngFor="let projectData of ProjectData">{{projectData.project_name}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="handleError('project_id', 'required')">
+            Project is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="42" fxFlexOffset="10px">
+        <mat-form-field>
+          <input matInput placeholder="Omschrijving" formControlName="description">
+          <mat-error *ngIf="handleError('description', 'required')">
+            Omschrijving is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="10" fxFlexOffset="10px">
+        <mat-form-field>
+          <input matInput placeholder="Aantal uren" formControlName="hours">
+          <mat-error *ngIf="handleError('hours', 'required')">
+            Aantal uren is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="8" fxFlexOffset="10px">
+        <div class="full-wrapper button-wrapper-input">
+          <div class="button-wrapper-input">
+            <button mat-icon-button color="primary" aria-label="Opslaan">
+              <mat-icon>save</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</form>
+
+<p *ngIf="TimesheetData.length <= 0" class="no-data">Er zijn nog geen uren toegevoegd!</p>
+
+<mat-card *ngIf="TimesheetData.length > 0">
+  <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
+    <div fxFlex="100">
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="day">
+          <th mat-header-cell class="day" *matHeaderCellDef> Dag</th>
+          <td mat-cell *matCellDef="let element" class="day"> {{this.utils.getDayByDate(element.date)}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell class="date" *matHeaderCellDef> Datum</th>
+          <td mat-cell *matCellDef="let element" class="date"> {{this.utils.convertDateNl(element.date)}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="project_name">
+          <th mat-header-cell class="project" *matHeaderCellDef> Project</th>
+          <td mat-cell *matCellDef="let element" class="project"> {{element.project_id.project_name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell class="description" *matHeaderCellDef> Omschrijving</th>
+          <td mat-cell *matCellDef="let element" class="description"> {{element.description}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="hours">
+          <th mat-header-cell class="hours" *matHeaderCellDef> Aantal uren</th>
+          <td mat-cell *matCellDef="let element" class="hours"> {{element.hours}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell class="actions" *matHeaderCellDef> Acties</th>
+          <td mat-cell *matCellDef="let element; let i = index;" class="actions">
+            <button mat-icon-button color="primary" aria-label="Bewerk" [routerLink]="['/edit-timesheet/', element._id]">
+              <mat-icon>create</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" aria-label="Verwijder" (click)="deleteTimesheet(i, element)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
+  </div>
+</mat-card>

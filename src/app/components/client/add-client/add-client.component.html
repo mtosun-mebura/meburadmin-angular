@@ -1,28 +1,22 @@
 <!-- Title group  -->
 <div class="title-group">
-  <h1 class="mat-h1">Klant toevoegen</h1>
-  <mat-divider fxFlex="1 0"></mat-divider>
+  <h1 class="mat-h1">Klanten</h1>
+  <mat-divider></mat-divider>
 </div>
 
 <!-- Form -->
-<div class="inner-wrapper">
-  <form [formGroup]="clientForm" (ngSubmit)="submitClientForm()" #resetClientForm="ngForm" novalidate>
-    <!-- Left block -->
-    <mat-card>
-      <div class="controllers-wrapper">
+<form [formGroup]="clientForm" (ngSubmit)="submitClientForm()" #resetClientForm="ngForm" novalidate>
+  <!-- Klantgegevens blok -->
+  <mat-card>
+    <mat-card-title><h3>Klant toevoegen</h3></mat-card-title>
+
+    <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
+      <div fxFlex="50" fxFlex.xs="50">
         <!-- Bedrijfsnaam -->
-        <mat-form-field class="example-full-width">
+        <mat-form-field class="">
           <input matInput placeholder="Bedrijfsnaam" formControlName="business_name">
           <mat-error *ngIf="handleError('business_name', 'required')">
             <strong>Bedrijfsnaam</strong> is verplicht
-          </mat-error>
-        </mat-form-field>
-
-        <!-- E-mailadres administratie -->
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="E-mailadres administratie" formControlName="finance_email_address">
-          <mat-error *ngIf="handleError('finance_email_address', 'required')">
-            <strong>E-mailadres</strong> is verplicht
           </mat-error>
         </mat-form-field>
 
@@ -47,14 +41,18 @@
           </mat-error>
         </mat-form-field>
       </div>
-    </mat-card>
 
-    <!-- Right block -->
-    <mat-card>
-      <div class="controllers-wrapper">
+      <div fxFlex="50" fxFlex.xs="50" fxFlexOffset="10px">
+        <!-- E-mailadres administratie -->
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="E-mailadres administratie" formControlName="finance_email_address">
+          <mat-error *ngIf="handleError('finance_email_address', 'required')">
+            <strong>E-mailadres</strong> is verplicht
+          </mat-error>
+        </mat-form-field>
 
         <!-- Adres -->
-        <mat-form-field class="example-full-width">
+        <mat-form-field class="example-full-width" [floatLabel]="floatLabelControl.value">
           <mat-label>Adres</mat-label>
           <input matInput placeholder="Hoogstraat 2" formControlName="address">
           <mat-error *ngIf="handleError('address', 'required')">
@@ -62,93 +60,112 @@
           </mat-error>
         </mat-form-field>
 
-        <!-- Postcode -->
-        <mat-form-field class="example-full-width">
-          <mat-label>Postcode</mat-label>
-          <input matInput placeholder="1234AB" formControlName="zip_code">
-          <mat-error *ngIf="handleError('zip_code', 'required')">
-            <strong>Postcode</strong> is verplicht
-          </mat-error>
-        </mat-form-field>
-
-        <!-- Standplaats -->
-        <mat-form-field class="example-full-width">
-          <mat-label>Standplaats</mat-label>
-          <input matInput placeholder="Amsterdam" formControlName="city">
-          <mat-error *ngIf="handleError('city', 'required')">
-            <strong>Standplaats</strong> is verplicht
-          </mat-error>
-        </mat-form-field>
-
+        <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
+          <div fxFlex="30" fxFlex.xs="50">
+            <!-- Postcode -->
+            <mat-form-field class="example-full-width" [floatLabel]="floatLabelControl.value">
+              <mat-label>Postcode</mat-label>
+              <input matInput placeholder="1234AB" formControlName="zip_code">
+              <mat-error *ngIf="handleError('zip_code', 'required')">
+                <strong>Postcode</strong> is verplicht
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="70" fxFlex.xs="50" fxFlexOffset="10px">
+            <!-- Standplaats -->
+            <mat-form-field class="example-full-width" [floatLabel]="floatLabelControl.value">
+              <mat-label>Standplaats</mat-label>
+              <input matInput placeholder="Amsterdam" formControlName="city">
+              <mat-error *ngIf="handleError('city', 'required')">
+                <strong>Standplaats</strong> is verplicht
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
       </div>
-    </mat-card>
+    </div>
+  </mat-card>
 
-    <mat-card>
-      <div class="controllers-wrapper">
+  <!-- Factuur informatie blok -->
+  <mat-card>
+    <mat-card-title><h3>Factuur informatie</h3></mat-card-title>
+
+    <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
+      <div fxFlex="50" fxFlex.xs="50">
 
         <!-- Inhoud -->
         <div class="misc-bottom-padding">
           <mat-label>Inhoud</mat-label>
-          <mat-radio-group aria-label="Select an option" formControlName="invoice_inner" class="vertical-radio-group">
+          <mat-radio-group aria-label="Select an option" formControlName="invoice_inner">
             <mat-radio-button value="week">Op weekbasis</mat-radio-button>
             <mat-radio-button value="project">Op projectbasis</mat-radio-button>
           </mat-radio-group>
         </div>
 
+        <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
+          <div fxFlex="30" fxFlex.xs="30">
+            <!-- Start datum -->
+            <mat-form-field class="input-small">
+              <input matInput readonly [matDatepicker]="picker" placeholder="Start datum" formControlName="start_date"
+                     (dateChange)="formatStartDate($event)">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-error *ngIf="handleError('start_date', 'required')">
+                Date of birth is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div fxFlex="30" fxFlex.xs="30" fxFlexOffset="10px">
+            <!-- Eind datum -->
+            <mat-form-field class="input-small">
+              <input matInput readonly [matDatepicker]="pickerEnd" placeholder="Eind datum" formControlName="end_date"
+                     (dateChange)="formatEndDate($event)">
+              <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+              <mat-datepicker #pickerEnd></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div fxFlex="30" fxFlex.xs="30" fxFlexOffset="10px">
+            <!-- Tarief -->
+            <mat-form-field class="input-small">
+              <mat-label>Tarief</mat-label>
+              <input matInput placeholder="Tarief" formControlName="rate">
+              <mat-error *ngIf="handleError('rate', 'required')">
+                Tarief is verplicht
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div fxFlex="50" fxFlex.xs="50" class="misc-bottom-padding">
         <!-- Betalingstermijn -->
+        <mat-label>Betalingstermijn</mat-label>
         <mat-form-field class="input-small">
-          <mat-label>Betalingstermijn</mat-label>
+          <mat-label>Aantal dagen</mat-label>
           <input matInput placeholder="Aantal dagen" formControlName="payment_days">
           <mat-error *ngIf="handleError('payment_days', 'required')">
             Betalingstermijn is verplicht
           </mat-error>
         </mat-form-field>
 
-      </div>
-    </mat-card>
-
-    <!-- Right block -->
-    <mat-card>
-      <div class="controllers-wrapper">
-
-        <!-- Start datum -->
-        <mat-form-field class="input-small">
-          <input matInput readonly [matDatepicker]="picker" placeholder="Start datum" formControlName="start_date"
-                 (dateChange)="formatStartDate($event)">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-          <mat-error *ngIf="handleError('start_date', 'required')">
-            Date of birth is required
-          </mat-error>
-        </mat-form-field>
-
-        <!-- Eind datum -->
-        <mat-form-field class="input-small">
-          <input matInput readonly [matDatepicker]="pickerEnd" placeholder="Eind datum" formControlName="end_date"
-                 (dateChange)="formatEndDate($event)">
-          <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
-          <mat-datepicker #pickerEnd></mat-datepicker>
-        </mat-form-field>
-
-        <!-- Tarief -->
-        <mat-form-field class="input-small">
-          <mat-label>Tarief</mat-label>
-          <input matInput placeholder="Tarief" formControlName="rate">
-          <mat-error *ngIf="handleError('rate', 'required')">
-            Tarief is verplicht
-          </mat-error>
-        </mat-form-field>
-
-      </div>
-    </mat-card>
-
-      <!-- Submit & Reset -->
-    <mat-card>
-      <div class="full-wrapper button-wrapper">
-        <div class="button-wrapper">
-          <button mat-flat-button color="primary">Opslaan</button>
+        <!-- BTW -->
+        <div class="misc-bottom-padding">
+          <mat-label>BTW</mat-label>
+          <mat-radio-group aria-label="Select an option" formControlName="vat" >
+            <mat-radio-button [value]="true">Ja</mat-radio-button>
+            <mat-radio-button [value]="false">Nee</mat-radio-button>
+          </mat-radio-group>
         </div>
       </div>
-    </mat-card>
-  </form>
-</div>
+    </div>
+  </mat-card>
+
+  <!-- Submit -->
+  <mat-card>
+    <div class="full-wrapper button-wrapper">
+      <div class="button-wrapper">
+        <button mat-flat-button color="primary">Opslaan</button>
+      </div>
+    </div>
+  </mat-card>
+</form>

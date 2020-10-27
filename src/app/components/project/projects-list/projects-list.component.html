@@ -1,46 +1,48 @@
 <!-- Title group  -->
 <div class="title-group">
   <h1 class="mat-h1">Overzicht projecten</h1>
-  <mat-divider fxFlex="1 0"></mat-divider>
+  <mat-divider></mat-divider>
 </div>
 
 <p *ngIf="ProjectData.length <= 0" class="no-data">Er zijn nog geen projecten toegevoegd!</p>
 
-<div class="container" *ngIf="ProjectData.length > 0">
-  <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="dataSource">
+<mat-card *ngIf="ProjectData.length > 0">
+  <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
+    <div fxFlex="100">
+      <table mat-table [dataSource]="dataSource">
 
-      <ng-container matColumnDef="business_name">
-        <th mat-header-cell *matHeaderCellDef> Naam </th>
-        <td mat-cell *matCellDef="let element"> {{element.client_id ? element.client_id.business_name : "Onbekend"}} </td>
-      </ng-container>
+        <ng-container matColumnDef="business_name">
+          <th mat-header-cell *matHeaderCellDef> Naam</th>
+          <td mat-cell *matCellDef="let element"> {{element.client_id ? element.client_id.business_name : "Onbekend"}} </td>
+        </ng-container>
 
-      <ng-container matColumnDef="project_code">
-        <th mat-header-cell *matHeaderCellDef> Projectcode </th>
-        <td mat-cell *matCellDef="let element"> {{element.project_code}} </td>
-      </ng-container>
+        <ng-container matColumnDef="project_code">
+          <th mat-header-cell *matHeaderCellDef> Projectcode</th>
+          <td mat-cell *matCellDef="let element"> {{element.project_code}} </td>
+        </ng-container>
 
-      <ng-container matColumnDef="project_name">
-        <th mat-header-cell *matHeaderCellDef> Projectnaam </th>
-        <td mat-cell *matCellDef="let element"> {{element.project_name}} </td>
-      </ng-container>
+        <ng-container matColumnDef="project_name">
+          <th mat-header-cell *matHeaderCellDef> Projectnaam</th>
+          <td mat-cell *matCellDef="let element"> {{element.project_name}} </td>
+        </ng-container>
 
-      <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef> Acties </th>
-        <td mat-cell *matCellDef="let element; let i = index;">
-          <button mat-icon-button color="primary" aria-label="Bewerk" [routerLink]="['/edit-project/', element._id]">
-            <mat-icon>create</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" aria-label="Verwijder" (click)="deleteProject(i, element)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef> Acties</th>
+          <td mat-cell *matCellDef="let element; let i = index;">
+            <button mat-icon-button color="primary" aria-label="Bewerk" [routerLink]="['/edit-project/', element._id]">
+              <mat-icon>create</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" aria-label="Verwijder" (click)="deleteProject(i, element)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
 
-    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons></mat-paginator>
+    </div>
   </div>
-</div>
+</mat-card>

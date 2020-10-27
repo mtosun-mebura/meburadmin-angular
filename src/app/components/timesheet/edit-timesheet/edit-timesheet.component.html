@@ -1,1 +1,75 @@
-<p>edit-timesheet works!</p>
+<!-- Title group  -->
+<div class="title-group">
+  <h1 class="mat-h1">Bewerk uren</h1>
+  <mat-divider></mat-divider>
+</div>
+
+<form [formGroup]="timesheetForm" (ngSubmit)="updateTimesheetForm()" #resetTimesheetForm="ngForm" novalidate>
+
+  <mat-card>
+    <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
+      <div fxFlex="10">
+        <mat-form-field>
+          <mat-label>Dag</mat-label>
+          <mat-select [(value)]="selectedDay" formControlName="day">
+            <mat-option [value]="weekDays" *ngFor="let weekDays of weekDaysArray">{{weekDays}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="handleError('day', 'required')">
+            Dag is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="10" fxFlexOffset="10px">
+        <mat-form-field>
+          <input matInput readonly [matDatepicker]="picker" placeholder="Datum" formControlName="date"
+                 (dateChange)="formatDate($event)">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="handleError('date', 'required')">
+            Contactpersoon is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="20" fxFlexOffset="10px">
+        <mat-form-field>
+          <mat-label>Project</mat-label>
+          <mat-select [(value)]="selected" formControlName="project_id">
+            <mat-option [value]="projectData._id" *ngFor="let projectData of ProjectData">{{projectData.project_name}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="handleError('project_id', 'required')">
+            Project is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="42" fxFlexOffset="10px">
+        <mat-form-field>
+          <input matInput placeholder="Omschrijving" formControlName="description">
+          <mat-error *ngIf="handleError('description', 'required')">
+            Contactpersoon is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="10" fxFlexOffset="10px">
+        <mat-form-field>
+          <input matInput placeholder="Aantal uren" formControlName="hours">
+          <mat-error *ngIf="handleError('hours', 'required')">
+            Aantal uren is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="8" fxFlexOffset="10px">
+        <div class="full-wrapper button-wrapper-input">
+          <div class="button-wrapper-input">
+            <button mat-icon-button color="warn" aria-label="Annuleer" (click)="cancel()">
+              <mat-icon>clear</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" aria-label="Opslaan">
+              <mat-icon>save</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+
+</form>
