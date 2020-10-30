@@ -41,4 +41,15 @@ export class UtilsService {
     // console.log('index months: ', months.splice(index, 0, item));
   }
 
+  // add zero's before value
+  addZero(value, numZeros) {
+    const n = Math.abs(value);
+    const zeros = Math.max(0, numZeros - Math.floor(n).toString().length );
+    let zeroString = Math.pow(10, zeros).toString().substr(1);
+    if ( value < 0 ) {
+      zeroString = '-' + zeroString;
+    }
+
+    return zeroString + n;
+  }
 }

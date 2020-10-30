@@ -87,7 +87,7 @@ export class AddClientComponent implements OnInit {
     return this.clientForm.controls[controlName].hasError(errorName);
   }
 
-  /* Submit book */
+  /* Submit clientForm */
   submitClientForm() {
     if (this.clientForm.valid) {
       this.clientApi.AddClient(this.clientForm.value).subscribe(res => {

@@ -1,0 +1,9 @@
+.radio-group {
+  /*display: flex;*/
+  /*flex-direction: column;*/
+  padding: 15px;
+}
+
+.font10 {
+  font-size: 11px;
+}

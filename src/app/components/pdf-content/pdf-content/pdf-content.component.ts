@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit, SimpleChanges} from '@angular/core';
 import * as moment from 'moment';
+import {UtilsService} from '../../../shared/utils/utils.service';
 
 @Component({
   selector: 'app-pdf-content',
@@ -12,14 +13,17 @@ export class PdfContentComponent implements OnInit {
   @Input() client: string;
   @Input() timesheetData: any[];
   @Input() clientInfo: any[];
-  todaysDate = moment(new Date()).format('DD-MM-YYYY');
+  @Input() invoiceNumber: string;
+  @Input() selectedDate;
   listWeekHours: any = [];
   totalExclVat = 0;
   totalVat = 0;
   totalValue = 0;
   clientVat = 21;
 
-  constructor() {
+  constructor(
+    public utils: UtilsService
+  ) {
     console.log('timesheet: ', this.timesheetData);
     // this.sumWeekHours();
   }

@@ -22,6 +22,7 @@ mongoose.connect(dataBaseConfig.db, {
 const clientRoute = require('./routes/client.route')
 const projectRoute = require('./routes/project.route')
 const timesheetRoute = require('./routes/timesheet.route')
+const invoiceRoute = require('./routes/invoice.route')
 
 const app = express();
 app.use(bodyParser.json());
@@ -38,6 +39,7 @@ app.use(express.static(path.join(__dirname, 'dist/meburadmin-angular')));
 app.use('/api/client', clientRoute)
 app.use('/api/project', projectRoute)
 app.use('/api/timesheet', timesheetRoute)
+app.use('/api/invoice', invoiceRoute)
 
 // PORT
 const port = process.env.PORT || 8000;

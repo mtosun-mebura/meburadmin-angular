@@ -5,7 +5,7 @@
 </div>
 
 <!-- selection year and week -->
-<form [formGroup]="invoiceForm" #resetTimesheetForm="ngForm" novalidate>
+<form [formGroup]="invoiceForm" (ngSubmit)="submitInvoiceForm()" #resetTimesheetForm="ngForm" novalidate>
   <mat-card>
     <mat-card-title><h3>Kies een periode</h3></mat-card-title>
     <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
@@ -31,15 +31,41 @@
           </mat-error>
         </mat-form-field>
       </div>
-      <div fxFlex="10" fxFlexOffset="10px" ng-controller="MainController">
+      <div fxFlex="10" fxFlexOffset="10px">
         <mat-form-field>
           <mat-label>klant</mat-label>
-          <mat-select [(value)]="chosenClient" formControlName="client" ng-model="chosenClient">
+          <mat-select [(value)]="chosenClient" formControlName="client_id">
             <mat-option [value]="clients._id" *ngFor="let clients of this.ClientData">{{clients.business_name}}</mat-option>
           </mat-select>
-          <mat-error *ngIf="handleError('client', 'required')">
+          <mat-error *ngIf="handleError('client_id', 'required')">
             Klant is verplicht
           </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="10" fxFlexOffset="10px">
+        <mat-form-field>
+          <input matInput readonly [matDatepicker]="picker" placeholder="Datum" formControlName="date"
+                 (dateChange)="formatDate($event)">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="handleError('date', 'required')">
+            Datum is verplicht
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="10" fxFlexOffset="10px">
+        <mat-form-field>
+          <mat-label>Deelfactuur</mat-label>
+          <mat-select formControlName="partial_invoice">
+            <mat-option [value]="false">Nee</mat-option>
+            <mat-option [value]="true">Ja</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Factuurnummer -->
+        <mat-form-field appearance="none">
+          <input matInput formControlName="invoice_number" [hidden]="true">
+          <input matInput formControlName="invoice_number_index" [hidden]="true">
         </mat-form-field>
       </div>
     </div>
@@ -50,18 +76,13 @@
       <div fxFlex="100">
         <div class="full-wrapper button-wrapper-input">
           <div class="button-wrapper-input">
-            <button mat-icon-button color="primary" aria-label="Opslaan" (click)="generatePdf()">
-              <mat-icon>save</mat-icon>
+            <button mat-icon-button color="primary" aria-label="Opslaan"> <!--(click)="generatePdf()" -->
+              <mat-icon>picture_as_pdf</mat-icon>
             </button>
           </div>
         </div>
-        <app-pdf-content [timesheetData]="this.filteredData" [clientInfo]="this.clientInfo"></app-pdf-content>
-      </div>
-      <div fxFlex="100">
-
+        <app-pdf-content [timesheetData]="this.filteredData" [clientInfo]="this.clientInfo" [invoiceNumber]="this.invoiceNumber" [selectedDate]="this.selectedDate"></app-pdf-content>
       </div>
     </div>
   </mat-card>
-
-
 </form>

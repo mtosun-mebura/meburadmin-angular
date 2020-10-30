@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: 'timesheets-list', component: TimesheetsListComponent },
   { path: 'add-invoice', component: AddInvoiceComponent },
   { path: 'edit-invoice/:id', component: EditInvoiceComponent },
-  { path: 'invoice-list', component: InvoicesListComponent }
+  { path: 'invoices-list', component: InvoicesListComponent }
 ];
 
 @NgModule({

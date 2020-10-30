@@ -1,24 +1,22 @@
-import {Component, NgZone, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, NgZone, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import * as moment from 'moment';
 import {Router} from '@angular/router';
 import {UtilsService} from '../../../shared/utils/utils.service';
 import {PdfService} from '../../../shared/pdf/pdf.service';
 
-// import pdfMake from 'pdfmake/build/pdfmake';
-// import pdfFonts from 'pdfmake/build/vfs_fonts';
-//
-// pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import htmlToPdfmake from 'html-to-pdfmake';
 import {MatTableDataSource} from '@angular/material/table';
 import {Timesheet} from '../../../shared/timesheet/timesheet';
 import {TimesheetApiService} from '../../../shared/timesheet/timesheetapi.service';
 import {ClientApiService} from '../../../shared/client/clientapi.service';
+import {InvoiceApiService} from '../../../shared/invoice/invoiceapi.service';
 
 @Component({
   selector: 'app-add-invoice',
   templateUrl: './add-invoice.component.html',
-  styleUrls: ['./add-invoice.component.css']
+  styleUrls: ['./add-invoice.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class AddInvoiceComponent implements OnInit {
@@ -26,27 +24,33 @@ export class AddInvoiceComponent implements OnInit {
   ClientData: any = [];
   filteredData: any = [];
   clientInfo: any = [];
+  invoiceData: any = [];
+  invoicesData: any = [];
   dataSource: MatTableDataSource<Timesheet>;
   invoiceForm: FormGroup;
   chosenYear = moment().year();
   chosenMonth = moment().month();
   chosenClient = '';
+  invoiceNumber = '';
+  selectedDate = moment(new Date().toISOString()).format("DD-MM-YYYY");
+  invoiceNumberIndex: number = 1;
   monthsArray: any = moment.months();
 
   constructor(
     private timesheetApi: TimesheetApiService,
     private clientApi: ClientApiService,
+    private invoiceApi: InvoiceApiService,
     public fb: FormBuilder,
     private router: Router,
     private ngZone: NgZone,
     public utils: UtilsService,
     private pdfService: PdfService
   ) {
-    console.log(this.chosenMonth);
   }
 
   ngOnInit(): void {
     this.submitFieldsForm();
+    this.getInvoiceNumber();
   }
 
   /* Reactive field form */
@@ -54,39 +58,35 @@ export class AddInvoiceComponent implements OnInit {
     this.invoiceForm = this.fb.group({
       year: [this.chosenYear, [Validators.required]],
       month: [this.chosenMonth, [Validators.required]],
-      client: [this.chosenClient, [Validators.required]],
+      client_id: [this.chosenClient, [Validators.required]],
+      date: ['', [Validators.required]],
+      partial_invoice: [false, [Validators.required]],
+      invoice_number: ['', [Validators.required]],
+      invoice_number_index: ['', [Validators.required]],
     });
 
     this.invoiceForm.get('year').valueChanges.subscribe(yearValue => {
       this.chosenYear = yearValue;
-      console.log('year: ', this.chosenYear);
       this.getTimesheetData(this.chosenYear, this.chosenMonth);
     });
 
     // onchange year update the data
     this.invoiceForm.get('month').valueChanges.subscribe(monthValue => {
       this.chosenMonth = monthValue;
-      console.log('month: ', this.chosenMonth);
       this.getTimesheetData(this.chosenYear, this.chosenMonth);
     });
 
     // onchange client update the data
-    this.invoiceForm.get('client').valueChanges.subscribe(clientValue => {
+    this.invoiceForm.get('client_id').valueChanges.subscribe(clientValue => {
       this.chosenClient = clientValue;
-      console.log('chosenClient: ', clientValue);
       this.filteredData = this.TimesheetData.filter(client => client.project_id.client_id._id === clientValue);
-      console.log('filter data: ', this.filteredData);
       this.clientInfo = this.getClientData(clientValue);
-      console.log('clientInfo: ',this.clientInfo);
-      // this.getTimesheetData(this.chosenYear, this.chosenMonth);
+      this.getInvoiceData(this.chosenYear, this.chosenMonth, clientValue);
     });
 
     this.getTimesheetData(this.chosenYear, this.chosenMonth);
 
     this.clientsFromTimesheetData();
-    console.log('datasource: ', this.TimesheetData);
-    // const grouped = this.groupBy(this.dataSource, client => client.project_id.client_id);
-    // console.log(grouped);
   }
 
   /* Get errors */
@@ -95,11 +95,8 @@ export class AddInvoiceComponent implements OnInit {
   }
 
   getTimesheetData(chosenYear, chosenMonth) {
-    console.log('getTimesheetData');
     this.timesheetApi.GetTimesheetsMonth(chosenYear, chosenMonth).subscribe(data => {
-      console.log('data month: ', data);
       this.TimesheetData = data;
-      console.log('TimesheetData: ', data);
       this.dataSource = new MatTableDataSource<Timesheet>(this.TimesheetData);
     });
   }
@@ -141,7 +138,6 @@ export class AddInvoiceComponent implements OnInit {
   }
 
   clientsFromTimesheetData() {
-    console.log('clientsFromTimesheetData');
     const clients: any = [];
     this.timesheetApi.GetTimesheetsMonth(this.chosenYear, this.chosenMonth).subscribe(data => {
       const result = this.groupBy(data, client => client.project_id.client_id);
@@ -157,4 +153,53 @@ export class AddInvoiceComponent implements OnInit {
       this.clientInfo = data;
     });
   }
+
+  getInvoiceData = (chosenYear, chosenMonth, chosenClient) => {
+    this.invoiceApi.GetInvoices(chosenYear, chosenMonth, chosenClient).subscribe(data => {
+      this.invoiceData = data;
+    });
+  }
+
+  getInvoiceNumber = () => {
+    let invoice_number = '';
+    let invoice_number_index = 1;
+    this.invoiceApi.GetAllInvoices().subscribe(data => {
+      this.invoicesData = data;
+      if (this.invoicesData.length > 0) {
+        invoice_number = this.chosenYear + '-' + this.utils.addZero(Number(this.invoicesData[0].invoice_number_index) + 1, 4);
+        invoice_number_index = Number(this.invoicesData[0].invoice_number_index) + 1;
+      } else {
+        invoice_number = '';
+        invoice_number_index = 1;
+      }
+
+      this.invoiceNumber = invoice_number;
+      this.invoiceForm.patchValue({
+        invoice_number
+      });
+
+      this.invoiceNumberIndex = invoice_number_index;
+      this.invoiceForm.patchValue({
+        invoice_number_index
+      });
+    });
+  }
+
+  /* Submit clientForm */
+  submitInvoiceForm() {
+    if (this.invoiceForm.valid) {
+      this.invoiceApi.AddInvoice(this.invoiceForm.value).subscribe(res => {
+        this.ngZone.run(() => this.router.navigateByUrl('/invoices-list'));
+      });
+    }
+  }
+
+  formatDate(e) {
+    this.invoiceForm.get('date').setValue(this.utils.convertDate(e.target.value), {
+      onlyself: true
+    });
+
+    this.selectedDate = moment(new Date(e.target.value).toISOString()).format("DD-MM-YYYY");
+  }
+
 }
