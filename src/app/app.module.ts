@@ -12,7 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ClientApiService } from './shared/client/clientapi.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe, CurrencyPipe } from '@angular/common';
-import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_LOCALE} from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AddProjectComponent } from './components/project/add-project/add-project.component';
 import { EditProjectComponent } from './components/project/edit-project/edit-project.component';
@@ -21,11 +21,16 @@ import { AddTimesheetComponent } from './components/timesheet/add-timesheet/add-
 import { EditTimesheetComponent } from './components/timesheet/edit-timesheet/edit-timesheet.component';
 import { TimesheetsListComponent } from './components/timesheet/timesheets-list/timesheets-list.component';
 import { MatCardModule } from '@angular/material/card';
-import {FlexLayoutModule} from '@angular/flex-layout';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { AddInvoiceComponent } from './components/invoice/add-invoice/add-invoice.component';
 import { EditInvoiceComponent } from './components/invoice/edit-invoice/edit-invoice.component';
 import { InvoicesListComponent } from './components/invoice/invoices-list/invoices-list.component';
 import { PdfContentComponent } from './components/pdf-content/pdf-content/pdf-content.component';
+import { StoreModule } from '@ngrx/store';
+import { ClientReducer } from './reducers/client/client.reducer';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
+import { CustomDateAdapter } from './shared/utils/dateadapter.service';
 
 import { registerLocaleData } from '@angular/common';
 import localeNl from '@angular/common/locales/nl';
@@ -59,9 +64,14 @@ registerLocaleData(localeNl);
     FormsModule,
     MatExpansionModule,
     MatCardModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    StoreModule.forRoot({client: ClientReducer}),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+    }),
   ],
-  providers: [ClientApiService, DatePipe, {provide: MAT_DATE_LOCALE, useValue: 'nl-NL'}, CurrencyPipe, {provide: LOCALE_ID, useValue: 'nl-NL'}],
+  providers: [ClientApiService, DatePipe, CurrencyPipe, {provide: LOCALE_ID, useValue: 'nl-NL'}, {provide: DateAdapter, useClass: CustomDateAdapter }],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

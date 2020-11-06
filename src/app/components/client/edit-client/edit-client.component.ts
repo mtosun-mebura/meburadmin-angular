@@ -1,8 +1,8 @@
-import { Router, ActivatedRoute } from '@angular/router';
-import { Component, OnInit, ViewChild, NgZone } from '@angular/core';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { ClientApiService } from '../../../shared/client/clientapi.service';
+import {Router, ActivatedRoute} from '@angular/router';
+import {Component, OnInit, ViewChild, NgZone} from '@angular/core';
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {MatChipInputEvent} from '@angular/material/chips';
+import {ClientApiService} from '../../../shared/client/clientapi.service';
 import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import * as moment from 'moment';
 
@@ -30,8 +30,8 @@ export class EditClientComponent implements OnInit {
   DepartmentArray: any = ['Financiën', 'Administratie', 'Debiteuren'];
   floatLabelControl = new FormControl('always');
 
-  ngOnInit() {
-    this.updateBookForm();
+  ngOnInit = () => {
+    this.updateFieldsForm();
   }
 
   constructor(
@@ -61,12 +61,12 @@ export class EditClientComponent implements OnInit {
         start_date: [data.start_date, [Validators.required]],
         end_date: [data.end_date, [Validators.required]],
         vat: [data.vat, [Validators.required]]
-      })
-    })
+      });
+    });
   }
 
   /* Reactive book form */
-  updateBookForm() {
+  updateFieldsForm = () => {
     this.clientForm = this.fb.group({
       business_name: ['', [Validators.required]],
       person_name: ['', [Validators.required]],
@@ -81,41 +81,40 @@ export class EditClientComponent implements OnInit {
       start_date: ['', [Validators.required]],
       end_date: ['', []],
       vat: [true, []]
-    })
+    });
   }
 
   /* Date */
-  formatStartDate(e) {
-    const convertDate = moment(new Date(e.target.value).toISOString()).format("YYYY-MM-DD");
+  formatStartDate = (e) => {
+    const convertDate = moment(new Date(e.target.value).toISOString()).format('YYYY-MM-DD');
     this.clientForm.get('start_date').setValue(convertDate, {
       onlyself: true
-    })
+    });
   }
 
-  formatEndDate(e) {
-    const convertDate = moment(new Date(e.target.value).toISOString()).format("YYYY-MM-DD");
+  formatEndDate = (e) => {
+    const convertDate = moment(new Date(e.target.value).toISOString()).format('YYYY-MM-DD');
     this.clientForm.get('end_date').setValue(convertDate, {
       onlyself: true
-    })
+    });
   }
 
   /* Get errors */
-  public handleError = (controlName: string, errorName: string) => {
+  handleError = (controlName: string, errorName: string) => {
     return this.clientForm.controls[controlName].hasError(errorName);
   }
 
   /* Update client */
-  updateClientForm() {
+  updateClientForm = () => {
     const id = this.actRoute.snapshot.paramMap.get('id');
     // if (window.confirm('Are you sure you want to update?')) {
-      this.clientApi.UpdateClient(id, this.clientForm.value).subscribe( res => {
-        this.ngZone.run(() => this.router.navigateByUrl('/clients-list'))
-      });
+    this.clientApi.UpdateClient(id, this.clientForm.value).subscribe(res => {
+      this.ngZone.run(() => this.router.navigateByUrl('/clients-list'));
+    });
     // }
   }
 
-  cancel() {
-      this.router.navigateByUrl('/clients-list');
+  cancel = () => {
+    this.router.navigateByUrl('/clients-list');
   }
-
 }

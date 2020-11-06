@@ -48,7 +48,7 @@ export class AddClientComponent implements OnInit {
   }
 
   /* Reactive field form */
-  submitFieldsForm() {
+  submitFieldsForm = () => {
     this.clientForm = this.fb.group({
       business_name: ['', [Validators.required]],
       person_name: ['', [Validators.required]],
@@ -64,34 +64,34 @@ export class AddClientComponent implements OnInit {
       end_date: ['', []],
       vat: [true, []],
       floatLabel: this.floatLabelControl,
-    })
+    });
   }
 
   /* Date */
-  formatStartDate(e) {
+  formatStartDate = (e) => {
     const convertDate = moment(new Date(e.target.value).toISOString()).format("YYYY-MM-DD");
     this.clientForm.get('start_date').setValue(convertDate, {
       onlyself: true
-    })
+    });
   }
 
-  formatEndDate(e) {
+  formatEndDate = (e) => {
     const convertDate = moment(new Date(e.target.value).toISOString()).format("YYYY-MM-DD");
     this.clientForm.get('end_date').setValue(convertDate, {
       onlyself: true
-    })
+    });
   }
 
   /* Get errors */
-  public handleError = (controlName: string, errorName: string) => {
+  handleError = (controlName: string, errorName: string) => {
     return this.clientForm.controls[controlName].hasError(errorName);
   }
 
   /* Submit clientForm */
-  submitClientForm() {
+  submitClientForm = () => {
     if (this.clientForm.valid) {
       this.clientApi.AddClient(this.clientForm.value).subscribe(res => {
-        this.ngZone.run(() => this.router.navigateByUrl('/clients-list'))
+        this.ngZone.run(() => this.router.navigateByUrl('/clients-list'));
       });
     }
   }

@@ -4,9 +4,13 @@
   <mat-divider></mat-divider>
 </div>
 
-<p *ngIf="ClientData.length <= 0" class="no-data">Er zijn nog geen klanten toegevoegd!</p>
+<p *ngIf="clientDataLength <= 0" class="no-data">Er zijn nog geen klanten toegevoegd!</p>
 
-<mat-card *ngIf="ClientData.length > 0">
+<ul *ngFor="let cl of client | async">
+  <li>{{cl.business_name}}</li>
+</ul>
+
+<mat-card *ngIf="clientDataLength > 0">
   <div fxLayout="row" fxLayout.xs="row" fxFlexFill>
     <div fxFlex="100">
       <table mat-table [dataSource]="dataSource">
@@ -57,7 +61,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
 
-      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons></mat-paginator>
     </div>
   </div>
 </mat-card>
